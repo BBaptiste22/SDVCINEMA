@@ -12,48 +12,25 @@ struct HomeView: View {
     var body: some View {
         TabView {
             
-            // 🎬 Films
             NavigationStack {
                 MovieView()
-                    .toolbar {
-                        ToolbarItem(placement: .navigationBarTrailing) {
-                            Button(action: {
-                                // Action recherche à ajouter
-                                print("Loupe films cliquée")
-                            }) {
-                                Image(systemName: "magnifyingglass")
-                            }
-                        }
-                    }
             }
             .tabItem {
-                Image(systemName: "film")
+                Image(systemName: "film.fill")
                 Text("Films")
             }
             
-            // 📺 Séries
             NavigationStack {
                 SerieView()
-                    .toolbar {
-                        ToolbarItem(placement: .navigationBarTrailing) {
-                            Button(action: {
-                                // Action recherche à ajouter
-                                print("Loupe séries cliquée")
-                            }) {
-                                Image(systemName: "magnifyingglass")
-                            }
-                        }
-                    }
             }
             .tabItem {
-                Image(systemName: "tv")
+                Image(systemName: "tv.fill")
                 Text("Séries")
             }
             
-            // ❤️ Favoris
-            Text("Favoris à venir")
+            FavoritesView()
                 .tabItem {
-                    Image(systemName: "heart")
+                    Image(systemName: "star.fill")
                     Text("Favoris")
                 }
         }

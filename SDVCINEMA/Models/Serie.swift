@@ -8,13 +8,18 @@
 
 import Foundation
 
-class Serie: Codable, Identifiable {
+class Serie: Codable, Identifiable ,Searchable {
+    
     
     let id: Int
     let name: String
     let overview: String
     let posterPath: String
     let firstAirDate: String
+    
+    var searchableTitle: String {
+           name
+    }
     
     enum CodingKeys: String, CodingKey {
         case id
@@ -24,4 +29,3 @@ class Serie: Codable, Identifiable {
         case firstAirDate = "first_air_date"
     }
 }
-

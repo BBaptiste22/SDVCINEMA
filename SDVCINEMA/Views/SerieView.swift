@@ -11,13 +11,26 @@ struct SerieView: View {
     
     @StateObject var viewModel = SerieViewModel()
     
+    @State private var searchText = ""
+
+    var filteredSeries: [Serie] {
+        if searchText.isEmpty {
+            return viewModel.series
+        } else {
+            return viewModel.series.filter {
+                $0.searchableTitle.localizedCaseInsensitiveContains(searchText)
+            }
+        }
+    }
+    
     var body: some View {
         NavigationView {
             
-            List(viewModel.series) { serie in
+            List(filteredSeries) { serie in
                 
                 NavigationLink(destination:
                     DetailView(
+                        id: serie.id,
                         title: serie.name,
                         posterPath: serie.posterPath,
                         date: serie.firstAirDate,
@@ -52,6 +65,7 @@ struct SerieView: View {
                 }
             }
             .navigationTitle("Séries Populaires")
+            .searchable(text: $searchText, prompt: "Rechercher une série")
         }
         .onAppear {
             viewModel.fetchSeries()

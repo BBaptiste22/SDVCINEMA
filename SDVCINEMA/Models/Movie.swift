@@ -7,13 +7,16 @@
 
 import Foundation
 
-class Movie : Codable {
+class Movie: Codable, Identifiable, Searchable {
     let id: Int
     let title: String
     let overview: String
     let posterPath: String
     let releaseDate: String
     
+    var searchableTitle: String {
+        title
+    }
     
     enum CodingKeys: String, CodingKey {
         case id
@@ -23,4 +26,3 @@ class Movie : Codable {
         case releaseDate = "release_date"
     }
 }
-
