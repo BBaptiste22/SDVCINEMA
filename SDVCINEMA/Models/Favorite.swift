@@ -20,7 +20,6 @@ class Favorite: Identifiable {
     }
 }
 
-// Conformité protocole
 extension Favorite: DetailPresentable {
     var detailTitle: String { title }
     var detailOverview: String { overview }
