@@ -95,5 +95,8 @@ Implémentée avec `.DetailPresentable()` et filtrage via
 -   AsyncImage
 -   Codable
 
+------------------------------------------------------------------------
+## Auteur
 
+Créé par Thomas CHAGNEAU et Baptiste BERNARD.
 
