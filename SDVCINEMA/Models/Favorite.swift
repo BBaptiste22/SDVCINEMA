@@ -1,27 +1,29 @@
-//
-//  Favorite.swift
-//  SDVCINEMA
-//
-//  Created by Etudiants on 25/02/2026.
-//
-
-import Foundation
 import SwiftData
 
 @Model
-class FavoriteItem {
+class Favorite: Identifiable {
     
     var id: Int
     var title: String
+    var overview: String
     var posterPath: String
     var date: String
-    var overview: String
+    var isMovie: Bool
     
-    init(id: Int, title: String, posterPath: String, date: String, overview: String) {
+    init(id: Int, title: String, overview: String, posterPath: String, date: String, isMovie: Bool) {
         self.id = id
         self.title = title
+        self.overview = overview
         self.posterPath = posterPath
         self.date = date
-        self.overview = overview
+        self.isMovie = isMovie
     }
+}
+
+// Conformité protocole
+extension Favorite: DetailPresentable {
+    var detailTitle: String { title }
+    var detailOverview: String { overview }
+    var detailPosterPath: String { posterPath }
+    var detailDate: String { date }
 }

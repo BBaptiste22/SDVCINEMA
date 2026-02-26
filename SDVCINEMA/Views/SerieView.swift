@@ -1,16 +1,12 @@
-//
-//  SerieView.swift
-//  SDVCINEMA
-//
-//  Created by Etudiants on 25/02/2026.
-//
-
 import SwiftUI
+import SwiftData
 
 struct SerieView: View {
-    
+
     @StateObject var viewModel = SerieViewModel()
-    
+    @Environment(\.modelContext) private var context
+    @Query var favorites: [Favorite]
+
     @State private var searchText = ""
 
     var filteredSeries: [Serie] {
@@ -18,47 +14,54 @@ struct SerieView: View {
             return viewModel.series
         } else {
             return viewModel.series.filter {
-                $0.searchableTitle.localizedCaseInsensitiveContains(searchText)
+                $0.detailTitle.localizedCaseInsensitiveContains(searchText)
             }
         }
     }
-    
+
+    func isFavorite(_ serie: Serie) -> Bool {
+        favorites.contains { $0.id == serie.id && !$0.isMovie }
+    }
+
+    func toggleFavorite(_ serie: Serie) {
+        if let existing = favorites.first(where: { $0.id == serie.id && !$0.isMovie }) {
+            context.delete(existing)
+        } else {
+            let fav = Favorite(
+                id: serie.id,
+                title: serie.detailTitle,
+                overview: serie.detailOverview,
+                posterPath: serie.detailPosterPath,
+                date: serie.detailDate,
+                isMovie: false
+            )
+            context.insert(fav)
+        }
+        try? context.save()
+    }
+
     var body: some View {
-        NavigationView {
-            
+        NavigationStack {
             List(filteredSeries) { serie in
-                
-                NavigationLink(destination:
-                    DetailView(
-                        id: serie.id,
-                        title: serie.name,
-                        posterPath: serie.posterPath,
-                        date: serie.firstAirDate,
-                        overview: serie.overview
-                    )
-                ) {
-                    HStack(spacing: 16) {
-                        
+                NavigationLink {
+                    DetailView(media: serie)
+                } label: {
+                    HStack {
                         AsyncImage(url: URL(string: "https://image.tmdb.org/t/p/w500\(serie.posterPath)")) { image in
-                            image
-                                .resizable()
-                                .scaledToFill()
+                            image.resizable().scaledToFill()
                         } placeholder: {
                             ProgressView()
                         }
                         .frame(width: 80, height: 120)
                         .cornerRadius(8)
-                        
-                        VStack(alignment: .leading, spacing: 6) {
-                            
-                            Text(serie.name)
-                                .font(.headline)
-                            
-                            Text(serie.firstAirDate)
+
+                        VStack(alignment: .leading) {
+                            Text(serie.detailTitle)
+                            Text(serie.detailDate)
                                 .font(.subheadline)
                                 .foregroundColor(.gray)
                         }
-                        
+
                         Spacer()
                     }
                     .padding(.vertical, 8)

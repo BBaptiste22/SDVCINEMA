@@ -15,7 +15,7 @@ struct SDVCINEMAApp: App {
             HomeView()
                 .preferredColorScheme(.dark)
         }
-        .modelContainer(for: FavoriteItem.self)
+        .modelContainer(for: Favorite.self)
         
     }
 }

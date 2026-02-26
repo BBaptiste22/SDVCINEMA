@@ -1,25 +1,12 @@
-//
-//  Serie.swift
-//
-//
-//  Created by Etudiants on 25/02/2026.
-//
-
-
 import Foundation
 
-class Serie: Codable, Identifiable ,Searchable {
-    
+class Serie: Codable, Identifiable, DetailPresentable {
     
     let id: Int
     let name: String
     let overview: String
     let posterPath: String
     let firstAirDate: String
-    
-    var searchableTitle: String {
-           name
-    }
     
     enum CodingKeys: String, CodingKey {
         case id
@@ -28,4 +15,9 @@ class Serie: Codable, Identifiable ,Searchable {
         case posterPath = "poster_path"
         case firstAirDate = "first_air_date"
     }
+    
+    var detailTitle: String { name }
+    var detailOverview: String { overview }
+    var detailPosterPath: String { posterPath }
+    var detailDate: String { firstAirDate }
 }

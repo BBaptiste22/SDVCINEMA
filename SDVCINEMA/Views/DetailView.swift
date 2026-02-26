@@ -3,65 +3,68 @@ import SwiftData
 
 struct DetailView: View {
     
-    let id: Int
-    let title: String
-    let posterPath: String
-    let date: String
-    let overview: String
+    let media: DetailPresentable
     
     @Environment(\.modelContext) private var context
-    @Query private var favorites: [FavoriteItem]
+    @Query var favorites: [Favorite]
     
     var isFavorite: Bool {
-        favorites.contains(where: { $0.id == id })
+        favorites.contains { $0.id == media.id }
+    }
+    
+    func toggleFavorite() {
+        if let existing = favorites.first(where: { $0.id == media.id }) {
+            context.delete(existing)
+        } else {
+            let newFavorite = Favorite(
+                id: media.id,
+                title: media.detailTitle,
+                overview: media.detailOverview,
+                posterPath: media.detailPosterPath,
+                date: media.detailDate,
+                isMovie: media is Movie
+            )
+            context.insert(newFavorite)
+        }
+        
+        try? context.save()
     }
     
     var body: some View {
         ScrollView {
-            
-            VStack(alignment: .leading, spacing: 16) {
+            VStack(spacing: 20) {
                 
-                AsyncImage(url: URL(string: "https://image.tmdb.org/t/p/w500\(posterPath)")) { image in
-                    image
-                        .resizable()
-                        .scaledToFit()
+                AsyncImage(url: URL(string: "https://image.tmdb.org/t/p/w500\(media.detailPosterPath)")) { image in
+                    image.resizable().scaledToFit()
                 } placeholder: {
                     ProgressView()
                 }
+                .cornerRadius(12)
                 
-                Text(title)
+                Text(media.detailTitle)
                     .font(.title)
                     .bold()
                 
-                Text("Date : \(date)")
+                Text(media.detailDate)
                     .foregroundColor(.gray)
                 
-                Text(overview)
+                Text(media.detailOverview)
+                    .padding()
+                
+                Spacer()
             }
             .padding()
         }
-        .navigationTitle(title)
-        .navigationBarTitleDisplayMode(.inline)
+        .navigationTitle(media.detailTitle)
         .toolbar {
-            Button(action: toggleFavorite) {
-                Image(systemName: isFavorite ? "star.fill" : "star")
-                    .foregroundColor(.yellow)
+            ToolbarItem(placement: .topBarTrailing) {
+                Button {
+                    toggleFavorite()
+                } label: {
+                    Image(systemName: isFavorite ? "star.fill" : "star")
+                        .foregroundColor(.yellow)
+                }
             }
-        }
-    }
-    
-    private func toggleFavorite() {
-        if let existing = favorites.first(where: { $0.id == id }) {
-            context.delete(existing)
-        } else {
-            let newFavorite = FavoriteItem(
-                id: id,
-                title: title,
-                posterPath: posterPath,
-                date: date,
-                overview: overview
-            )
-            context.insert(newFavorite)
         }
     }
 }
